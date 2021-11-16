@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import es.uah.portalfacturasms.infrastructure.model.User;
 import es.uah.portalfacturasms.infrastructure.service.UserService;
 import es.uah.portalfacturasms.infrastructure.utils.ResponseMessage;
 
@@ -22,10 +21,10 @@ public class HomeController {
 	
 	
 	@GetMapping(value="/usuario")
-	public @ResponseBody ResponseMessage getSesion(@RequestParam(value="username", required = false) String username)	{
+	public @ResponseBody ResponseMessage getSesion(@RequestParam(value="username", required = false) String username) {
 		logger.info("Entramos en el controlador getSaveSession() username={}",username);
-		User _user = this.userService.obtieneUsuarioDeUsername(username);
-		return new ResponseMessage("1", "El usuario existe", _user);
+		ResponseMessage _response = this.userService.obtieneResponseMessageUsername(username);
+		return _response;
 	}
 	
 	@GetMapping(value="/sesion")
@@ -33,8 +32,8 @@ public class HomeController {
 			@RequestParam(value="username", required = false) String username,
 			@RequestParam(value="password", required = false) String password) {
 		logger.info("Entramos en el controlador getSaveSession() username={}",username);
-		User _user = this.userService.guardarUsuarioEnSesion(username, password);
-		return new ResponseMessage("1", "El usuario ["+username+"] se ha guardado en sesion", _user);
+		ResponseMessage _response = this.userService.obtieneResponseMessageDeGuardarUsuarioEnSesion(username, password);
+		return _response;
 	}
 	
 	

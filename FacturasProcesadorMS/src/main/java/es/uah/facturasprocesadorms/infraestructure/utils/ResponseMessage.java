@@ -14,10 +14,10 @@ public class ResponseMessage implements Serializable {
 		super();
 	}
 	
-	public ResponseMessage(String mensaje, Object data) {
+	public ResponseMessage(String code, String mensaje) {
 		super();
+		this.code = code;
 		this.mensaje = mensaje;
-		this.data = data;
 	}
 	
 	public ResponseMessage(String code, String mensaje, Object data) {
