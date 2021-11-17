@@ -24,11 +24,13 @@ public class FacturaService {
 	//URL
 	private static final String URL_GENERAL_VALIDADOR_FACTURA = "http://facturasvalidadorms:8090/validadorFacturas";
 	private static final String URL_GENERAL_PERSISTIDOR_FACTURA = "http://facturaspersistidorms:8095/persistidorFacturas";
+	private static final String URL_GENERAL_PERSISTIDOR_LOGGER = "http://facturasloggercambiosms:8100/loggerCambiosFacturas";
 	private static final String FACTURA = "factura";
 	
 	//TYPES
 	private static final String TIPO_VALIDADOR = "VALIDADOR";
 	private static final String TIPO_PERSISTIDOR = "PERSISTIDOR";
+	private static final String TIPO_LOGGER = "LOGGER_CAMBIOS";
 	
 	//CODES
 	private static final String NOK = "-1";
@@ -61,9 +63,20 @@ public class FacturaService {
 		
 		if( this.validarPeticionHttp(_responsePersist) ) {
 			
-			logger.error("Se ha producido un error al validar la factura para el usuario={}", username);
+			logger.error("Se ha producido un error al persistir la factura para el usuario={}", username);
 			
-			ResponseMessage _responseErrorPersister = _responseValidator == null ? new ResponseMessage(NOK, "Se ha producido un error al guardar la factura", null) : _responseValidator;
+			ResponseMessage _responseErrorPersister = _responsePersist == null ? new ResponseMessage(NOK, "Se ha producido un error al guardar la factura", null) : _responsePersist;
+			
+			return _responseErrorPersister;
+		}
+		
+		ResponseMessage _responsePersistLogger = this.postPersisteLoggerFactura(factura, username, xHeaderHttp);
+		
+		if( this.validarPeticionHttp(_responsePersistLogger) ) {
+			
+			logger.error("Se ha producido un error al persistir el logger de la factura para el usuario={}", username);
+			
+			ResponseMessage _responseErrorPersister = _responsePersistLogger == null ? new ResponseMessage(NOK, "Se ha producido un error al guardar el logger", null) : _responsePersistLogger;
 			
 			return _responseErrorPersister;
 		}
@@ -165,6 +178,51 @@ public class FacturaService {
 	
 	/**
 	 * 
+	 * @param factura
+	 * @param username
+	 * @return
+	 */
+	private ResponseMessage postPersisteLoggerFactura(final Factura factura, final String username, final String xHeaderHttp) {
+		
+		logger.info("Entramos en el metodo postPersisteLoggerFactura(factura={}, username={})",factura.getNumero(),username);
+		
+		ResponseMessage _response = null;
+		ResponseEntity<ResponseMessage> _responseHttp = null;
+		
+		String _uri = "/" + FACTURA + "?username="+username;
+		String _url = this.createUrl(_uri, TIPO_LOGGER);
+		
+		if( StringUtils.isBlank(_url) )
+		{	
+			logger.error("La url del microservicio de persistidor de la factura no es correcta. URL={}", _url);
+			_response = new ResponseMessage("-1", "Se ha producido un error interno");
+		}
+		try 
+		{
+			HttpEntity<?> httpEntity = this.obtieneParametrosURL(factura, xHeaderHttp);
+			
+			_responseHttp = this.httpTemplate.exchange(_url, HttpMethod.POST, httpEntity, ResponseMessage.class);
+			
+			_response = ( _responseHttp != null ) ? _responseHttp.getBody() : new ResponseMessage("-1", "No se ha podido obtener respuesta del persistidor de facturas");
+		}
+		catch(RestClientException e) 
+		{
+			logger.error("El microservicio de procesado de factura no esta operativo");
+			e.printStackTrace();
+			_response = new ResponseMessage("-1", "No se ha podido obtener respuesta del persistidor de facturas");
+		}
+		catch(Exception e) 
+		{
+			logger.error("El microservicio de procesado de factura no ha respondido correctamente");
+			e.printStackTrace();
+			_response = new ResponseMessage("-1", "No se ha podido obtener respuesta del persistidor de facturas");
+		}
+		
+		return _response;
+	}
+	
+	/**
+	 * 
 	 * @param _response
 	 * @return
 	 */
@@ -213,6 +271,8 @@ public class FacturaService {
 		case TIPO_PERSISTIDOR:
 			_url = URL_GENERAL_PERSISTIDOR_FACTURA + _uri.trim();
 			break;
+		case TIPO_LOGGER:
+			_url = URL_GENERAL_PERSISTIDOR_LOGGER + _uri.trim();
 		default:
 			break;
 		}

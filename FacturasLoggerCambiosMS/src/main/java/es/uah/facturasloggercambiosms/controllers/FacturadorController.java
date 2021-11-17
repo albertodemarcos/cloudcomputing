@@ -3,6 +3,7 @@ package es.uah.facturasloggercambiosms.controllers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,6 +23,7 @@ public class FacturadorController {
 	private FacturaService facturaService;
 	
 	
+	@PostMapping(value="/factura")
 	public @ResponseBody ResponseMessage postPersisteLoggerCambiosUserFactura(
 			@RequestParam(value="username", required = false) final String username,
 			@RequestHeader(value="X-tipo") String xHeaderHttp,
