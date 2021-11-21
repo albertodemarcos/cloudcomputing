@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import es.uah.facturasloggercambiosms.infraestructure.builders.impl.FacturaBuilder;
-import es.uah.facturasloggercambiosms.infraestructure.model.dtos.Factura;
+import es.uah.facturasloggercambiosms.infraestructure.model.dtos.FacturaDto;
 import es.uah.facturasloggercambiosms.infraestructure.model.entities.LoggerCambiosUserFactura;
 import es.uah.facturasloggercambiosms.infraestructure.repository.LoggerCambiosUserFacturaRepository;
 import es.uah.facturasloggercambiosms.infraestructure.utils.ResponseMessage;
@@ -34,11 +34,11 @@ public class FacturaService {
 	 * @param username
 	 * @return
 	 */
-	public ResponseMessage persisteLoggerCambiosUserFactura(final Factura factura, final String username, final String xHeaderHttp) {
+	public ResponseMessage persisteLoggerCambiosUserFactura(final FacturaDto facturaDto, final String username, final String xHeaderHttp) {
 		
-		logger.info("Entramos en el metodo persisteLoggerCambiosUserFactura(factura={}, username={})",factura.getNumero(),username);
+		logger.info("Entramos en el metodo persisteLoggerCambiosUserFactura(factura={}, username={})",facturaDto.getNumero(),username);
 		
-		LoggerCambiosUserFactura _loggerCambios = this.obtieneBuilderFactura(factura, username);
+		LoggerCambiosUserFactura _loggerCambios = this.obtieneBuilderFactura(facturaDto, username);
 		
 		if( _loggerCambios == null ) {
 			
@@ -58,7 +58,7 @@ public class FacturaService {
 		
 		ResponseMessage _responsePersist = new ResponseMessage(OK, "", _loggerCambios);
 		
-		logger.info("Se ha persistido el LoggerCambiosUserFactura de la factura={}, username={})",factura.getNumero(),username);
+		logger.info("Se ha persistido el LoggerCambiosUserFactura de la factura={}, username={})",facturaDto.getNumero(),username);
 		
 		return _responsePersist;
 	}
@@ -93,9 +93,9 @@ public class FacturaService {
 	 * @param username
 	 * @return
 	 */
-	private LoggerCambiosUserFactura obtieneBuilderFactura(final Factura factura, final String username) {
+	private LoggerCambiosUserFactura obtieneBuilderFactura(final FacturaDto facturaDto, final String username) {
 		
-		LoggerCambiosUserFactura _loggerCambios = this.facturaBuilder.build(factura, username);
+		LoggerCambiosUserFactura _loggerCambios = this.facturaBuilder.build(facturaDto, username);
 		
 		return _loggerCambios;
 	}

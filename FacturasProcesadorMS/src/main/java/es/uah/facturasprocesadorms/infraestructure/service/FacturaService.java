@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import es.uah.facturasprocesadorms.infraestructure.model.Factura;
+import es.uah.facturasprocesadorms.infraestructure.model.FacturaDto;
 import es.uah.facturasprocesadorms.infraestructure.utils.ResponseMessage;
 
 
@@ -44,11 +44,11 @@ public class FacturaService {
 	 * @param username
 	 * @return
 	 */
-	public ResponseMessage procesaFactura(final Factura factura, final String username, final String xHeaderHttp) {
+	public ResponseMessage procesaFactura(final FacturaDto facturaDto, final String username, final String xHeaderHttp) {
 		
-		logger.info("Entramos en el metodo procesaFactura(factura={}, username={})",factura.getNumero(),username);
+		logger.info("Entramos en el metodo procesaFactura(factura={}, username={})",facturaDto.getNumero(),username);
 		
-		ResponseMessage _responseValidator = this.postValidarFactura(factura, username, xHeaderHttp);
+		ResponseMessage _responseValidator = this.postValidarFactura(facturaDto, username, xHeaderHttp);
 		
 		if( this.validarPeticionHttp(_responseValidator) ) {
 			
@@ -59,7 +59,7 @@ public class FacturaService {
 			return _responseErrorValidator;
 		}
 		
-		ResponseMessage _responsePersist = this.postPersisteFactura(factura, username, xHeaderHttp);
+		ResponseMessage _responsePersist = this.postPersisteFactura(facturaDto, username, xHeaderHttp);
 		
 		if( this.validarPeticionHttp(_responsePersist) ) {
 			
@@ -70,7 +70,7 @@ public class FacturaService {
 			return _responseErrorPersister;
 		}
 		
-		ResponseMessage _responsePersistLogger = this.postPersisteLoggerFactura(factura, username, xHeaderHttp);
+		ResponseMessage _responsePersistLogger = this.postPersisteLoggerFactura(facturaDto, username, xHeaderHttp);
 		
 		if( this.validarPeticionHttp(_responsePersistLogger) ) {
 			
@@ -81,7 +81,7 @@ public class FacturaService {
 			return _responseErrorPersister;
 		}
 		
-		logger.info("Se ha persistido la factura={}, username={})",factura.getNumero(),username);
+		logger.info("Se ha persistido la factura={}, username={})",facturaDto.getNumero(),username);
 		
 		return _responsePersist;
 	}
@@ -92,9 +92,9 @@ public class FacturaService {
 	 * @param username
 	 * @return
 	 */
-	private ResponseMessage postValidarFactura(final Factura factura, final String username, final String xHeaderHttp) {
+	private ResponseMessage postValidarFactura(final FacturaDto facturaDto, final String username, final String xHeaderHttp) {
 		
-		logger.info("Entramos en el metodo postValidarFactura(factura={}, username={})",factura.getNumero(),username);
+		logger.info("Entramos en el metodo postValidarFactura(factura={}, username={})",facturaDto.getNumero(),username);
 		
 		ResponseMessage _response = null;
 		ResponseEntity<ResponseMessage> _responseHttp = null;
@@ -109,7 +109,7 @@ public class FacturaService {
 		}
 		try 
 		{
-			HttpEntity<?> httpEntity = this.obtieneParametrosURL(factura, xHeaderHttp);
+			HttpEntity<?> httpEntity = this.obtieneParametrosURL(facturaDto, xHeaderHttp);
 			
 			_responseHttp = this.httpTemplate.exchange(_url, HttpMethod.POST, httpEntity, ResponseMessage.class);
 			
@@ -137,9 +137,9 @@ public class FacturaService {
 	 * @param username
 	 * @return
 	 */
-	private ResponseMessage postPersisteFactura(final Factura factura, final String username, final String xHeaderHttp) {
+	private ResponseMessage postPersisteFactura(final FacturaDto facturaDto, final String username, final String xHeaderHttp) {
 		
-		logger.info("Entramos en el metodo postPersisteFactura(factura={}, username={})",factura.getNumero(),username);
+		logger.info("Entramos en el metodo postPersisteFactura(factura={}, username={})",facturaDto.getNumero(),username);
 		
 		ResponseMessage _response = null;
 		ResponseEntity<ResponseMessage> _responseHttp = null;
@@ -154,7 +154,7 @@ public class FacturaService {
 		}
 		try 
 		{
-			HttpEntity<?> httpEntity = this.obtieneParametrosURL(factura, xHeaderHttp);
+			HttpEntity<?> httpEntity = this.obtieneParametrosURL(facturaDto, xHeaderHttp);
 			
 			_responseHttp = this.httpTemplate.exchange(_url, HttpMethod.POST, httpEntity, ResponseMessage.class);
 			
@@ -182,9 +182,9 @@ public class FacturaService {
 	 * @param username
 	 * @return
 	 */
-	private ResponseMessage postPersisteLoggerFactura(final Factura factura, final String username, final String xHeaderHttp) {
+	private ResponseMessage postPersisteLoggerFactura(final FacturaDto facturaDto, final String username, final String xHeaderHttp) {
 		
-		logger.info("Entramos en el metodo postPersisteLoggerFactura(factura={}, username={})",factura.getNumero(),username);
+		logger.info("Entramos en el metodo postPersisteLoggerFactura(factura={}, username={})",facturaDto.getNumero(),username);
 		
 		ResponseMessage _response = null;
 		ResponseEntity<ResponseMessage> _responseHttp = null;
@@ -199,7 +199,7 @@ public class FacturaService {
 		}
 		try 
 		{
-			HttpEntity<?> httpEntity = this.obtieneParametrosURL(factura, xHeaderHttp);
+			HttpEntity<?> httpEntity = this.obtieneParametrosURL(facturaDto, xHeaderHttp);
 			
 			_responseHttp = this.httpTemplate.exchange(_url, HttpMethod.POST, httpEntity, ResponseMessage.class);
 			
@@ -237,13 +237,13 @@ public class FacturaService {
 	 * @param xHeaderHttp
 	 * @return
 	 */
-	private HttpEntity<?> obtieneParametrosURL(final Factura factura, final String xHeaderHttp) {
+	private HttpEntity<?> obtieneParametrosURL(final FacturaDto facturaDto, final String xHeaderHttp) {
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("X-tipo", xHeaderHttp);
 		headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
 		
-		HttpEntity<?> httpEntity = new HttpEntity<Object>(factura, headers);
+		HttpEntity<?> httpEntity = new HttpEntity<Object>(facturaDto, headers);
 		return httpEntity;
 	}
 	

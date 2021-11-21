@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import es.uah.portalfacturasms.infrastructure.model.Factura;
+import es.uah.portalfacturasms.infrastructure.model.FacturaDto;
 import es.uah.portalfacturasms.infrastructure.utils.ResponseMessage;
 
 @Service
@@ -31,7 +31,7 @@ public class FacturaService {
 	@Autowired
 	private UserService userService;
 	
-	public ResponseMessage persisteFacturaDeUsuario(final Factura factura, final String username, final String xHeaderHttp) 
+	public ResponseMessage persisteFacturaDeUsuario(final FacturaDto facturaDto, final String username, final String xHeaderHttp) 
 	{
 		ResponseMessage _responeUser = userService.obtieneResponseMessageUsername(username);
 		
@@ -41,7 +41,7 @@ public class FacturaService {
 			return new ResponseMessage("-1", "El usuario no existe", null);
 		}
 		
-		ResponseMessage _responseFacturador = this.persisteFactura(factura, username, xHeaderHttp);
+		ResponseMessage _responseFacturador = this.persisteFactura(facturaDto, username, xHeaderHttp);
 		
 		if( _responeUser == null || StringUtils.isBlank( _responeUser.getCode() ) ) 
 		{
@@ -52,9 +52,9 @@ public class FacturaService {
 		return _responseFacturador;
 	}
 	
-	private ResponseMessage persisteFactura(final Factura factura, final String username, final String xHeaderHttp)
+	private ResponseMessage persisteFactura(final FacturaDto facturaDto, final String username, final String xHeaderHttp)
 	{		
-		logger.info("Entramos en el metodo persisteFactura(factura={}, username={})",factura.getNumero(),username);		
+		logger.info("Entramos en el metodo persisteFactura(factura={}, username={})",facturaDto.getNumero(),username);		
 		
 		ResponseMessage _response = null;
 		ResponseEntity<ResponseMessage> _responseHttp = null;
@@ -68,7 +68,7 @@ public class FacturaService {
 		}
 		try 
 		{
-			HttpEntity<?> httpEntity = this.obtieneParametrosURL(factura, xHeaderHttp);
+			HttpEntity<?> httpEntity = this.obtieneParametrosURL(facturaDto, xHeaderHttp);
 			
 			_responseHttp = this.httpTemplate.exchange(_url, HttpMethod.POST, httpEntity, ResponseMessage.class);
 			
@@ -92,13 +92,13 @@ public class FacturaService {
 		return _response;
 	}
 
-	private HttpEntity<?> obtieneParametrosURL(final Factura factura, final String xHeaderHttp) {
+	private HttpEntity<?> obtieneParametrosURL(final FacturaDto facturaDto, final String xHeaderHttp) {
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("X-tipo", xHeaderHttp);
 		headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
 		
-		HttpEntity<?> httpEntity = new HttpEntity<Object>(factura, headers);
+		HttpEntity<?> httpEntity = new HttpEntity<Object>(facturaDto, headers);
 		return httpEntity;
 	}
 	

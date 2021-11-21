@@ -40,7 +40,7 @@ public class FacturaService {
 		
 		Factura _factura = this.facturaBuilder.build(facturaDto, username);
 		
-		if( _factura == null /*|| StringUtils.isBlank(_factura.getId() )*/ ) {
+		if( _factura == null ) {
 			
 			logger.error("Se ha producido un error al crear la entidad factura para el username={}", username);
 			

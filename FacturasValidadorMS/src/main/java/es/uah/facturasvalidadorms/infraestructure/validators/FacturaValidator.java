@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import es.uah.facturasvalidadorms.infraestructure.model.Factura;
+import es.uah.facturasvalidadorms.infraestructure.model.FacturaDto;
 
 @Component
 public class FacturaValidator implements Validator {
@@ -17,53 +17,51 @@ public class FacturaValidator implements Validator {
 	@Override
 	public boolean supports(Class<?> clazz) {
 		// TODO Auto-generated method stub
-		return Factura.class.isAssignableFrom(clazz);
+		return FacturaDto.class.isAssignableFrom(clazz);
 	}
 
 	@Override
 	public void validate(Object target, Errors errors) {
 		// TODO Auto-generated method stub
 		
-		logger.info("Se evaluan los datos del dto={} ", Factura.class );
+		logger.info("Se evaluan los datos del dto={} ", FacturaDto.class );
 		
-		Factura _factura = (Factura) target;
+		FacturaDto _facturaDto = (FacturaDto) target;
 		
-		if( _factura == null ) 
+		if( _facturaDto == null ) 
 		{
 			errors.rejectValue("", "", null, "");
 		}
 		
-		if( StringUtils.isBlank(_factura.getNumero()) ) 
+		if( StringUtils.isBlank(_facturaDto.getNumero()) ) 
 		{
 			errors.rejectValue("numero", "", null, "");
 		}
 		
-		if( _factura.getFechaEmision() == null  ) 
+		if( _facturaDto.getFechaEmision() == null  ) 
 		{
 			errors.rejectValue("fechaEmision", "", null, "");
 		}
 		
-		if( StringUtils.isBlank( _factura.getCliente() ) )
+		if( StringUtils.isBlank( _facturaDto.getCliente() ) )
 		{
 			errors.rejectValue("cliente", "", null, "");
 		}
 		
-		if( StringUtils.isBlank( _factura.getEmisor() ) )
+		if( StringUtils.isBlank( _facturaDto.getEmisor() ) )
 		{
 			errors.rejectValue("emisor", "", null, "");
 		}
 		
-		if( StringUtils.isBlank( _factura.getConcepto() ) ) 
+		if( StringUtils.isBlank( _facturaDto.getConcepto() ) ) 
 		{
 			errors.rejectValue("concepto", "", null, "");
 		}
 		
-		if( _factura.getImporte() == null )
+		if( _facturaDto.getImporte() == null )
 		{			
 			errors.rejectValue("importe", "", null, "");
 		}
-		
-		
 		
 	}
 	

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import es.uah.facturasprocesadorms.infraestructure.model.Factura;
+import es.uah.facturasprocesadorms.infraestructure.model.FacturaDto;
 import es.uah.facturasprocesadorms.infraestructure.service.FacturaService;
 import es.uah.facturasprocesadorms.infraestructure.utils.ResponseMessage;
 
@@ -28,10 +28,10 @@ public class FacturadorController {
 	public @ResponseBody ResponseMessage postFacturaProcesada(
 			@RequestParam(value="username", required = false) final String username,
 			@RequestHeader(value="X-tipo") String xHeaderHttp,
-			@RequestBody final Factura factura) {
+			@RequestBody final FacturaDto facturaDto) {
 		
 		logger.info("Entramos en el controlador postFactura() username={}",username);
-		ResponseMessage _response = this.facturaService.procesaFactura(factura, username, xHeaderHttp);
+		ResponseMessage _response = this.facturaService.procesaFactura(facturaDto, username, xHeaderHttp);
 		return _response;
 	}
 	

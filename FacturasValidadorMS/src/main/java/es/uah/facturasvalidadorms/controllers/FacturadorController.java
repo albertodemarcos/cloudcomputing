@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import es.uah.facturasvalidadorms.infraestructure.model.Factura;
+import es.uah.facturasvalidadorms.infraestructure.model.FacturaDto;
 import es.uah.facturasvalidadorms.infraestructure.service.FacturaService;
 import es.uah.facturasvalidadorms.infraestructure.utils.ResponseMessage;
 
@@ -29,11 +29,11 @@ public class FacturadorController {
 	public @ResponseBody ResponseMessage postFacturaValidada(
 			@RequestParam(value="username", required = false) final String username,
 			@RequestHeader(value="X-tipo") String xHeaderHttp,
-			@RequestBody final Factura factura,
+			@RequestBody final FacturaDto facturaDto,
 			BindingResult result ) {
 		
 		logger.info("Entramos en el controlador postFactura() username={}",username);
-		ResponseMessage _response = this.facturaService.validarFactura(factura, username, xHeaderHttp, result);
+		ResponseMessage _response = this.facturaService.validarFactura(facturaDto, username, xHeaderHttp, result);
 		return _response;
 	}
 	

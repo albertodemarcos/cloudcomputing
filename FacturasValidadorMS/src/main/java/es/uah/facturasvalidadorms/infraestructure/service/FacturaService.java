@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
-import es.uah.facturasvalidadorms.infraestructure.model.Factura;
+import es.uah.facturasvalidadorms.infraestructure.model.FacturaDto;
 import es.uah.facturasvalidadorms.infraestructure.utils.ResponseMessage;
 import es.uah.facturasvalidadorms.infraestructure.validators.FacturaValidator;
 
@@ -29,11 +29,11 @@ public class FacturaService {
 	 * @param username
 	 * @return
 	 */
-	public ResponseMessage validarFactura(final Factura factura, final String username, final String xHeaderHttp, BindingResult result) {
+	public ResponseMessage validarFactura(final FacturaDto facturaDto, final String username, final String xHeaderHttp, BindingResult result) {
 		
-		logger.info("Entramos en el metodo validarFactura(factura={}, username={})", factura!=null?factura.getNumero():null, username);
+		logger.info("Entramos en el metodo validarFactura(factura={}, username={})", facturaDto!=null?facturaDto.getNumero():null, username);
 		
-		this.facturaValidator.validate(factura, result);
+		this.facturaValidator.validate(facturaDto, result);
 		
 		if( result.hasErrors() ) {
 			
@@ -42,9 +42,9 @@ public class FacturaService {
 			return new ResponseMessage(NOK, "La factura no esta bien formada", result.getAllErrors() );
 		}
 		
-		ResponseMessage _responsePersist = new ResponseMessage(OK, "Se ha validado la factura", factura);
+		ResponseMessage _responsePersist = new ResponseMessage(OK, "Se ha validado la factura", facturaDto);
 		
-		logger.info("Se ha validado la factura={}, username={})",factura.getNumero(), username);
+		logger.info("Se ha validado la factura={}, username={})",facturaDto.getNumero(), username);
 		
 		return _responsePersist;
 	}

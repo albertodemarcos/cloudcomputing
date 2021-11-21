@@ -1,10 +1,10 @@
-package es.uah.facturasvalidadorms.infraestructure.model;
+package es.uah.portalfacturasms.infrastructure.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class Factura implements Serializable {
+public class FacturaDto implements Serializable {
 
 	private static final long serialVersionUID = 6639589389606784322L;
 
@@ -15,11 +15,11 @@ public class Factura implements Serializable {
 	private String concepto;
 	private BigDecimal importe;
 
-	public Factura() {
+	public FacturaDto() {
 		super();
 	}
 
-	public Factura(String numero, Date fechaEmision, String cliente, String emisor, String concepto,
+	public FacturaDto(String numero, Date fechaEmision, String cliente, String emisor, String concepto,
 			BigDecimal importe) {
 		super();
 		this.numero = numero;
