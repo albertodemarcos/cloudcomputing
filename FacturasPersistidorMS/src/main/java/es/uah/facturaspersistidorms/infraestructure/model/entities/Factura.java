@@ -3,6 +3,7 @@ package es.uah.facturaspersistidorms.infraestructure.model.entities;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -20,6 +21,7 @@ public class Factura implements Serializable {
 	private String emisor;
 	private String concepto;
 	private BigDecimal importe;
+	private List<LineaFactura> lineasFactura;
 
 	public Factura() {
 		super();
@@ -99,6 +101,14 @@ public class Factura implements Serializable {
 
 	public void setImporte(BigDecimal importe) {
 		this.importe = importe;
+	}
+
+	public List<LineaFactura> getLineasFactura() {
+		return lineasFactura;
+	}
+
+	public void setLineasFactura(List<LineaFactura> lineasFactura) {
+		this.lineasFactura = lineasFactura;
 	}
 
 }

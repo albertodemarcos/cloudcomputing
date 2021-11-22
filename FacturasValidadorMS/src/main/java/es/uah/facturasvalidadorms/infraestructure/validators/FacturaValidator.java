@@ -1,13 +1,17 @@
 package es.uah.facturasvalidadorms.infraestructure.validators;
 
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import es.uah.facturasvalidadorms.infraestructure.model.FacturaDto;
+import es.uah.facturasvalidadorms.infraestructure.model.LineaFacturaDto;
 
 @Component
 public class FacturaValidator implements Validator {
@@ -30,8 +34,23 @@ public class FacturaValidator implements Validator {
 		
 		if( _facturaDto == null ) 
 		{
-			errors.rejectValue("", "", null, "");
+			logger.error("No ha llegado la factura");
+			errors.rejectValue("factura", "", null, "");
 		}
+		
+		this.validarFactura(_facturaDto, errors);
+		
+		if(errors.hasErrors()) {
+			logger.error("Se ha producido errores al validar la factura");
+			return;
+		}
+		
+		this.validarLineasFactura(_facturaDto, errors);
+	}
+	
+	private void validarFactura(FacturaDto _facturaDto, Errors errors) {
+		
+		logger.debug("validarFactura()");
 		
 		if( StringUtils.isBlank(_facturaDto.getNumero()) ) 
 		{
@@ -62,8 +81,61 @@ public class FacturaValidator implements Validator {
 		{			
 			errors.rejectValue("importe", "", null, "");
 		}
-		
 	}
 	
+	private void validarLineasFactura(FacturaDto _facturaDto, Errors errors) {
+		
+		logger.debug("validarLineasFactura()");
+		
+		List<LineaFacturaDto> _lineas = _facturaDto.getLineasFacturaDto();
+		
+		if( CollectionUtils.isEmpty(_lineas) ) 
+		{
+			logger.error("No han llegado las lineas de la factura");
+			errors.rejectValue("lineas", "", null, "");
+			return;
+		}
+		
+		for(LineaFacturaDto _linea : _lineas) 
+		{
+			this.validarLineaFactura(_linea, errors);
+		}
+	}
+	
+	private void validarLineaFactura(LineaFacturaDto _lineaFacturaDto, Errors errors) {
+		
+		logger.debug("validarLineaFactura()");
+		
+		if( StringUtils.isBlank( _lineaFacturaDto.getProducto() ) ) 
+		{
+			errors.rejectValue("producto", "", null, "");
+		}
+		
+		if( StringUtils.isBlank( _lineaFacturaDto.getDescripcion() ) ) 
+		{
+			errors.rejectValue("descripcion", "", null, "");
+		}
+		
+		if( StringUtils.isBlank( _lineaFacturaDto.getUnidad() ) ) 
+		{
+			errors.rejectValue("unidad", "", null, "");
+		}
+		
+		if( StringUtils.isBlank( _lineaFacturaDto.getImpuesto() ) ) 
+		{
+			errors.rejectValue("impuesto", "", null, "");
+		}
+		
+		if( _lineaFacturaDto.getImporte() == null ) 
+		{
+			errors.rejectValue("importe", "", null, "");
+		}
+		
+		if( _lineaFacturaDto.getCantidad() == null ) 
+		{
+			errors.rejectValue("cantidad", "", null, "");
+		}
+		
+	}
 	
 }

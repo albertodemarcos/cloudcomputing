@@ -3,6 +3,8 @@ package es.uah.facturasvalidadorms.infraestructure.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
+
 
 public class FacturaDto implements Serializable {
 
@@ -14,7 +16,8 @@ public class FacturaDto implements Serializable {
 	private String emisor;
 	private String concepto;
 	private BigDecimal importe;
-
+	private List<LineaFacturaDto> lineasFacturaDto;
+	
 	public FacturaDto() {
 		super();
 	}
@@ -76,6 +79,20 @@ public class FacturaDto implements Serializable {
 
 	public void setImporte(BigDecimal importe) {
 		this.importe = importe;
+	}
+
+	public List<LineaFacturaDto> getLineasFacturaDto() {
+		return lineasFacturaDto;
+	}
+
+	public void setLineasFacturaDto(List<LineaFacturaDto> lineasFacturaDto) {
+		this.lineasFacturaDto = lineasFacturaDto;
+	}
+
+	@Override
+	public String toString() {
+		return "FacturaDto [numero=" + numero + ", fechaEmision=" + fechaEmision + ", cliente=" + cliente + ", emisor="
+				+ emisor + ", concepto=" + concepto + ", importe=" + importe + "]";
 	}
 
 }

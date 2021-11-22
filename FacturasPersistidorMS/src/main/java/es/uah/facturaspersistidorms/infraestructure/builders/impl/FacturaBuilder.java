@@ -1,19 +1,29 @@
 package es.uah.facturaspersistidorms.infraestructure.builders.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
 import es.uah.facturaspersistidorms.infraestructure.builders.IBuilder;
 import es.uah.facturaspersistidorms.infraestructure.model.dtos.FacturaDto;
+import es.uah.facturaspersistidorms.infraestructure.model.dtos.LineaFacturaDto;
 import es.uah.facturaspersistidorms.infraestructure.model.entities.Factura;
+import es.uah.facturaspersistidorms.infraestructure.model.entities.LineaFactura;
 
 
 @Component
 public class FacturaBuilder implements IBuilder<Factura, FacturaDto> {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	
+	@Autowired
+	private LineaFacturaBuilder lineaFacturaBuilder;
+	
 	
 	@Override
 	public Factura build(FacturaDto dto, String username) {
@@ -35,7 +45,36 @@ public class FacturaBuilder implements IBuilder<Factura, FacturaDto> {
 		_factura.setNumero(dto.getNumero());
 		_factura.setUsername(username);		
 		
+		List<LineaFactura> lineasFactura = this.obtieneLineasFacturaDesdeLineasFacturaDto(dto, username);
+		_factura.setLineasFactura(lineasFactura);
+		
 		return _factura;
 	}
 
+	private List<LineaFactura> obtieneLineasFacturaDesdeLineasFacturaDto(FacturaDto _facturaDto, String username) {
+		
+		List<LineaFactura> _lineasFactura = new ArrayList<LineaFactura>();
+		
+		if(_facturaDto.getLineasFacturaDto() == null || _facturaDto.getLineasFacturaDto().size() < 1)
+		{
+			logger.error("Las lineas de la factura no han llegado correctamente por el usuario={}", username);
+		}
+		
+		for( LineaFacturaDto _lineaDto : _facturaDto.getLineasFacturaDto() )
+		{
+			LineaFactura _linea = lineaFacturaBuilder.build(_lineaDto, null);
+			
+			if( _linea == null ) 
+			{
+				logger.error("La linea de la factura no ha podido crearse");
+				continue;
+			}
+			
+			_lineasFactura.add(_linea);
+		}
+		
+		return _lineasFactura;
+	}
+	
+	
 }
