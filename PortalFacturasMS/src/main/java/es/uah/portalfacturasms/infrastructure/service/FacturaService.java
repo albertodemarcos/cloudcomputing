@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import es.uah.portalfacturasms.config.profile.PortUrlProfile;
 import es.uah.portalfacturasms.infrastructure.model.FacturaDto;
 import es.uah.portalfacturasms.infrastructure.utils.ResponseMessage;
 
@@ -21,7 +22,7 @@ public class FacturaService {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	//URL
-	private static final String URL_GENERAL = "http://facturasprocesadorms:8085";
+	private static final String URL_GENERAL = "http://facturasprocesadorms:";
 	private static final String URL_PROCESADOR_FACTURA = "/procesadorFacturas/";
 	private static final String PERSISTE_FACTURA = "factura";
 	
@@ -30,6 +31,9 @@ public class FacturaService {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private PortUrlProfile portUrlProfile;
 	
 	public ResponseMessage persisteFacturaDeUsuario(final FacturaDto facturaDto, final String username, final String xHeaderHttp) 
 	{
@@ -111,9 +115,11 @@ public class FacturaService {
 			logger.error("La uri no es correcta. URI={}", _uri);
 			return null;
 		}		
-		String _url = URL_GENERAL + URL_PROCESADOR_FACTURA + _uri.trim() + "?username="+username;		
+		String _url = URL_GENERAL + portUrlProfile.getPortUrl() + URL_PROCESADOR_FACTURA + _uri.trim() + "?username="+username;		
 		logger.info("Salimos del metodo createUrl(uri={}) con _url={}", _uri, _url);		
 		return _url;
 	}
+	
+	
 	
 }

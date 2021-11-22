@@ -17,6 +17,13 @@ import es.uah.facturasvalidadorms.infraestructure.model.LineaFacturaDto;
 public class FacturaValidator implements Validator {
 	
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	
+	private Double totalLineas;
+
+	public FacturaValidator() {
+		super();
+		this.totalLineas = 0D;
+	}
 
 	@Override
 	public boolean supports(Class<?> clazz) {
@@ -46,6 +53,8 @@ public class FacturaValidator implements Validator {
 		}
 		
 		this.validarLineasFactura(_facturaDto, errors);
+		
+		this.totalLineas = 0D;
 	}
 	
 	private void validarFactura(FacturaDto _facturaDto, Errors errors) {
@@ -54,32 +63,32 @@ public class FacturaValidator implements Validator {
 		
 		if( StringUtils.isBlank(_facturaDto.getNumero()) ) 
 		{
-			errors.rejectValue("numero", "", null, "");
+			errors.rejectValue("numero", "", null, "El número de la factura esta vacio");
 		}
 		
 		if( _facturaDto.getFechaEmision() == null  ) 
 		{
-			errors.rejectValue("fechaEmision", "", null, "");
+			errors.rejectValue("fechaEmision", "", null, "La fecha de emisión esta vacia");
 		}
 		
 		if( StringUtils.isBlank( _facturaDto.getCliente() ) )
 		{
-			errors.rejectValue("cliente", "", null, "");
+			errors.rejectValue("cliente", "", null, "El nombre del cliente esta vacio");
 		}
 		
 		if( StringUtils.isBlank( _facturaDto.getEmisor() ) )
 		{
-			errors.rejectValue("emisor", "", null, "");
+			errors.rejectValue("emisor", "", null, "El nombre del emisor de la factura esta vacio");
 		}
 		
 		if( StringUtils.isBlank( _facturaDto.getConcepto() ) ) 
 		{
-			errors.rejectValue("concepto", "", null, "");
+			errors.rejectValue("concepto", "", null, "El concepto de la factura esta vacio");
 		}
 		
 		if( _facturaDto.getImporte() == null )
 		{			
-			errors.rejectValue("importe", "", null, "");
+			errors.rejectValue("importe", "", null, "El importe de la factura esta vacio");
 		}
 	}
 	
@@ -92,50 +101,75 @@ public class FacturaValidator implements Validator {
 		if( CollectionUtils.isEmpty(_lineas) ) 
 		{
 			logger.error("No han llegado las lineas de la factura");
-			errors.rejectValue("lineas", "", null, "");
+			errors.rejectValue("lineas", "", null, "No hay lineas de facturas que expliquen la factura");
 			return;
 		}
 		
-		for(LineaFacturaDto _linea : _lineas) 
+		for(int i=0; i < _lineas.size(); i++) 
 		{
-			this.validarLineaFactura(_linea, errors);
+			LineaFacturaDto _linea = _lineas.get(i);
+			this.validarLineaFactura(_linea, i, errors);
 		}
+		
+		this.compruebaSumaTotalesFacturasLineas(_facturaDto, errors);
 	}
 	
-	private void validarLineaFactura(LineaFacturaDto _lineaFacturaDto, Errors errors) {
+	private void validarLineaFactura(LineaFacturaDto _lineaFacturaDto, int position, Errors errors) {
 		
 		logger.debug("validarLineaFactura()");
 		
 		if( StringUtils.isBlank( _lineaFacturaDto.getProducto() ) ) 
 		{
-			errors.rejectValue("producto", "", null, "");
+			errors.rejectValue("lineasFacturaDto["+position+"].producto", "", null, "El nombre del producto de la linea["+(position+1)+"] esta vacio");
 		}
 		
 		if( StringUtils.isBlank( _lineaFacturaDto.getDescripcion() ) ) 
 		{
-			errors.rejectValue("descripcion", "", null, "");
+			errors.rejectValue("lineasFacturaDto["+position+"].descripcion", "", null, "La descripción del producto de la linea["+(position+1)+"] esta vacia");
 		}
 		
 		if( StringUtils.isBlank( _lineaFacturaDto.getUnidad() ) ) 
 		{
-			errors.rejectValue("unidad", "", null, "");
+			errors.rejectValue("lineasFacturaDto["+position+"].unidad", "", null, "La unidad de medida del producto de la linea["+(position+1)+"] esta vacia");
 		}
 		
 		if( StringUtils.isBlank( _lineaFacturaDto.getImpuesto() ) ) 
 		{
-			errors.rejectValue("impuesto", "", null, "");
+			errors.rejectValue("lineasFacturaDto["+position+"].impuesto", "", null, "El impuesto del producto de la linea["+(position+1)+"] esta vacio");
 		}
 		
 		if( _lineaFacturaDto.getImporte() == null ) 
 		{
-			errors.rejectValue("importe", "", null, "");
+			errors.rejectValue("lineasFacturaDto["+position+"].importe", "", null, "El importe del producto de la linea["+(position+1)+"] esta vacio");
 		}
 		
 		if( _lineaFacturaDto.getCantidad() == null ) 
 		{
-			errors.rejectValue("cantidad", "", null, "");
+			errors.rejectValue("lineasFacturaDto["+position+"].cantidad", "", null, "La cantidad del producto de la linea["+(position+1)+"] esta vacia");
+			return;
 		}
 		
+		totalLineas = totalLineas.doubleValue() + _lineaFacturaDto.getImporte().doubleValue();
 	}
 	
+	private void compruebaSumaTotalesFacturasLineas(FacturaDto _facturaDto, Errors errors) {
+		
+		Double facturaImporte = 0D;
+		
+		try {
+			
+			facturaImporte = 0D; _facturaDto.getImporte().doubleValue();
+			
+			if( Math.round(_facturaDto.getImporte().doubleValue()) != Math.round(totalLineas.doubleValue()) ) 
+			{
+				errors.rejectValue("importe", "", null, "El importe de la factura no coincide con la suma de las lineas de la factura");
+			}
+			
+		}catch(Exception e) 
+		{
+			logger.error("Se ha producido un error al comprobar los importes de la factura={} con sus lineas={}",facturaImporte,totalLineas);
+			errors.rejectValue("importe", "", null, "El importe de la factura no coincide con la suma de las lineas de la factura");
+		}
+	}
+
 }

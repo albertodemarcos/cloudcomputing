@@ -228,7 +228,13 @@ public class FacturaService {
 	 */
 	private Boolean validarPeticionHttp(final ResponseMessage _response) {
 		
-		 return (_response == null || ( StringUtils.isNoneBlank(_response.getCode()) && NOK.equalsIgnoreCase( _response.getCode() ) ) );
+		logger.info("validarPeticionHttp()");
+		
+		Boolean peticionValida = (_response == null || ( StringUtils.isNoneBlank(_response.getCode()) && NOK.equalsIgnoreCase( _response.getCode() ) ) );
+		
+		logger.debug("validarPeticionHttp() => {}", peticionValida);
+		
+		return peticionValida;
 	}
 	
 	/**
