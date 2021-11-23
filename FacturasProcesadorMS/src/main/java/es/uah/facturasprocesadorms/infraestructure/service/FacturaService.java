@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import es.uah.facturasprocesadorms.config.profile.PortUrlProfile;
 import es.uah.facturasprocesadorms.infraestructure.model.FacturaDto;
 import es.uah.facturasprocesadorms.infraestructure.utils.ResponseMessage;
 
@@ -22,9 +23,9 @@ public class FacturaService {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	//URL
-	private static final String URL_GENERAL_VALIDADOR_FACTURA = "http://facturasvalidadorms:8090/validadorFacturas";
-	private static final String URL_GENERAL_PERSISTIDOR_FACTURA = "http://facturaspersistidorms:8095/persistidorFacturas";
-	private static final String URL_GENERAL_PERSISTIDOR_LOGGER = "http://facturasloggercambiosms:8100/loggerCambiosFacturas";
+	private static final String URL_GENERAL_VALIDADOR_FACTURA = "http://facturasvalidadorms:";
+	private static final String URL_GENERAL_PERSISTIDOR_FACTURA = "http://facturaspersistidorms:";
+	private static final String URL_GENERAL_PERSISTIDOR_LOGGER = "http://facturasloggercambiosms:";
 	private static final String FACTURA = "factura";
 	
 	//TYPES
@@ -37,6 +38,9 @@ public class FacturaService {
 	
 	@Autowired
     private RestTemplate httpTemplate;
+	
+	@Autowired
+	private PortUrlProfile portUrlProfile;
 	
 	/**
 	 * 
@@ -272,13 +276,13 @@ public class FacturaService {
 		
 		switch(_tipo) {
 		case TIPO_VALIDADOR:
-			_url = URL_GENERAL_VALIDADOR_FACTURA + _uri.trim();
+			_url = URL_GENERAL_VALIDADOR_FACTURA + portUrlProfile.getPortUrlValidador() + "/validadorFacturas" + _uri.trim();
 			break;
 		case TIPO_PERSISTIDOR:
-			_url = URL_GENERAL_PERSISTIDOR_FACTURA + _uri.trim();
+			_url = URL_GENERAL_PERSISTIDOR_FACTURA + portUrlProfile.getPortUrlValidador() + "/persistidorFacturas" + _uri.trim();
 			break;
 		case TIPO_LOGGER:
-			_url = URL_GENERAL_PERSISTIDOR_LOGGER + _uri.trim();
+			_url = URL_GENERAL_PERSISTIDOR_LOGGER + portUrlProfile.getPortUrlValidador() + "/loggerCambiosFacturas" + _uri.trim();
 		default:
 			break;
 		}
