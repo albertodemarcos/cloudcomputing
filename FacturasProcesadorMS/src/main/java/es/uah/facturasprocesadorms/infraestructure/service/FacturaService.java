@@ -237,7 +237,7 @@ public class FacturaService {
 		Boolean peticionValida = (_response == null || ( StringUtils.isNoneBlank(_response.getCode()) && NOK.equalsIgnoreCase( _response.getCode() ) ) );
 		
 		logger.debug("validarPeticionHttp() => {}", peticionValida);
-		
+
 		return peticionValida;
 	}
 	

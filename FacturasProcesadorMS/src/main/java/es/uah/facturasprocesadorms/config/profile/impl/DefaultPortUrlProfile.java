@@ -9,11 +9,10 @@ import org.springframework.stereotype.Component;
 
 import es.uah.facturasprocesadorms.config.profile.PortUrlProfile;
 
-
 @Component
 @Profile("default")
 public class DefaultPortUrlProfile implements PortUrlProfile {
-
+	
 	private static final String PORT_DEFAULT = "8080";
 	
 	@Value("${validador.port:}")
@@ -25,12 +24,11 @@ public class DefaultPortUrlProfile implements PortUrlProfile {
 	@Value("${persistidorlogger.port:}")
 	private String PORT_PERSISTIDOR_LOGGER;
 	
-	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Override
 	public String getPortUrlValidador() {
-		
+
 		logger.info("getPortUrlValidador()");
 		
 		if( StringUtils.isNotBlank(PORT_VALIDADOR) ) 
@@ -46,7 +44,7 @@ public class DefaultPortUrlProfile implements PortUrlProfile {
 
 	@Override
 	public String getPortUrlPersistidor() {
-		
+
 		logger.info("getPortUrlPersistidor()");
 		
 		if( StringUtils.isNotBlank(PORT_PERSISTIDOR) ) 

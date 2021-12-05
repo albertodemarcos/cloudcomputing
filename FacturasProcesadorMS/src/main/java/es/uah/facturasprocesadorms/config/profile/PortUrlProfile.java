@@ -7,5 +7,5 @@ public interface PortUrlProfile {
 	public String getPortUrlPersistidor();
 	
 	public String getPortUrlPersistidorLogger();
-	
+
 }

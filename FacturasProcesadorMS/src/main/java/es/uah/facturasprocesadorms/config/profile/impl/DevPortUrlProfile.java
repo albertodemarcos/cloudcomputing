@@ -29,6 +29,5 @@ public class DevPortUrlProfile implements PortUrlProfile {
 		// TODO Auto-generated method stub
 		return PORT_DEV_PERSISTIDOR_LOGGER;
 	}
-	
 
 }
