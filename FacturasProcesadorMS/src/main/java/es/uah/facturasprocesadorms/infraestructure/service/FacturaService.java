@@ -279,10 +279,10 @@ public class FacturaService {
 			_url = URL_GENERAL_VALIDADOR_FACTURA + portUrlProfile.getPortUrlValidador() + "/validadorFacturas" + _uri.trim();
 			break;
 		case TIPO_PERSISTIDOR:
-			_url = URL_GENERAL_PERSISTIDOR_FACTURA + portUrlProfile.getPortUrlValidador() + "/persistidorFacturas" + _uri.trim();
+			_url = URL_GENERAL_PERSISTIDOR_FACTURA + portUrlProfile.getPortUrlPersistidor() + "/persistidorFacturas" + _uri.trim();
 			break;
 		case TIPO_LOGGER:
-			_url = URL_GENERAL_PERSISTIDOR_LOGGER + portUrlProfile.getPortUrlValidador() + "/loggerCambiosFacturas" + _uri.trim();
+			_url = URL_GENERAL_PERSISTIDOR_LOGGER + portUrlProfile.getPortUrlPersistidorLogger() + "/loggerCambiosFacturas" + _uri.trim();
 		default:
 			break;
 		}
