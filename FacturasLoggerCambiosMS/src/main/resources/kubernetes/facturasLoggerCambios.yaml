@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: facturasloggercambiosms
+  name: facturasloggercambiosms
+  namespace: default  
+spec:
+  selector:
+   run: facturasloggercambiosms
+  ports:
+  - port: 8080
+    targetPort: 8080    
+    protocol: TCP
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: facturasloggercambiosms
+  name: facturasloggercambiosms
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: facturasloggercambiosms
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        run: facturasloggercambiosms
+    spec:           
+      containers:
+      - image: amm1992/facturasloggercambiosms:v1
+        imagePullPolicy: Always
+        name: facturasloggercambiosms
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /loggerCambiosFacturas/readinessProbe/isOk
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+        env:
+        - name: SERVICIO_POSTGRESQL_USERNAME
+          valueFrom:
+             secretKeyRef:
+                name: servicio-postgresdb
+                key: username
+        - name: SERVICIO_POSTGRESQL_PASSWORD
+          valueFrom:
+             secretKeyRef:
+                name: servicio-postgresdb
+                key: password        
+        - name: SERVICIO_POSTGRESQL_HOST
+          valueFrom:
+             secretKeyRef:
+                name: servicio-postgresdb
+                key: hostname
+        
+             
+        
