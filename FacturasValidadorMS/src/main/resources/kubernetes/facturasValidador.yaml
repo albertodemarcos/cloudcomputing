@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: facturasvalidadorms
+  name: facturasvalidadorms
+  namespace: default  
+spec:
+  selector:
+   run: facturasvalidadorms
+  ports:
+  - port: 8080
+    targetPort: 8080    
+    protocol: TCP
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: facturasvalidadorms
+  name: facturasvalidadorms
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: facturasvalidadorms
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        run: facturasvalidadorms
+    spec:           
+      containers:
+      - image: amm1992/facturasvalidadorms:v1
+        imagePullPolicy: Always
+        name: facturasvalidadorms
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /validadorFacturas/readinessProbe/isOk
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+             
+        
