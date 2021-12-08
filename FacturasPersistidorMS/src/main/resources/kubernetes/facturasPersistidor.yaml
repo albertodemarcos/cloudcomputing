@@ -69,18 +69,18 @@ spec:
                 key: database
         - name: SERVICIO_MONGODB_DB
           valueFrom:
-             secretKeyRef:
-                name: servicio-mongodb
+             configMapKeyRef:
+                name: servicio-mongodb-config
                 key: database
         - name: SERVICIO_MONGODB_HOST
           valueFrom:
-             secretKeyRef:
-                name: servicio-mongodb
+             configMapKeyRef:
+                name: servicio-mongodb-config
                 key: hostname
         - name: SERVICIO_MONGODB_PORT
           valueFrom:
-             secretKeyRef:
-                name: servicio-mongodb
+             configMapKeyRef:
+                name: servicio-mongodb-config
                 key: port
              
         
