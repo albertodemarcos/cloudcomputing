@@ -23,9 +23,9 @@ public class FacturaService {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	//URL
-	private static final String URL_GENERAL_VALIDADOR_FACTURA = "http://facturasvalidadorms:";
+	//private static final String URL_GENERAL_VALIDADOR_FACTURA = "http://facturasvalidadorms:";
 	private static final String URL_GENERAL_PERSISTIDOR_FACTURA = "http://facturaspersistidorms:";
-	private static final String URL_GENERAL_PERSISTIDOR_LOGGER = "http://facturasloggercambiosms:";
+	//private static final String URL_GENERAL_PERSISTIDOR_LOGGER = "http://facturasloggercambiosms:";
 	private static final String FACTURA = "factura";
 	
 	//TYPES
@@ -52,7 +52,7 @@ public class FacturaService {
 		
 		logger.info("Entramos en el metodo procesaFactura(factura={}, username={})",facturaDto.getNumero(),username);
 		
-		ResponseMessage _responseValidator = this.postValidarFactura(facturaDto, username, xHeaderHttp);
+		/*ResponseMessage _responseValidator = this.postValidarFactura(facturaDto, username, xHeaderHttp);
 		
 		if( this.validarPeticionHttp(_responseValidator) ) {
 			
@@ -61,7 +61,7 @@ public class FacturaService {
 			ResponseMessage _responseErrorValidator = _responseValidator == null ? new ResponseMessage(NOK, "Se ha producido un error al validar la factura", null) : _responseValidator;
 			
 			return _responseErrorValidator;
-		}
+		}*/
 		
 		ResponseMessage _responsePersist = this.postPersisteFactura(facturaDto, username, xHeaderHttp);
 		
@@ -74,7 +74,7 @@ public class FacturaService {
 			return _responseErrorPersister;
 		}
 		
-		ResponseMessage _responsePersistLogger = this.postPersisteLoggerFactura(facturaDto, username, xHeaderHttp);
+		/*ResponseMessage _responsePersistLogger = this.postPersisteLoggerFactura(facturaDto, username, xHeaderHttp);
 		
 		if( this.validarPeticionHttp(_responsePersistLogger) ) {
 			
@@ -83,7 +83,7 @@ public class FacturaService {
 			ResponseMessage _responseErrorPersister = _responsePersistLogger == null ? new ResponseMessage(NOK, "Se ha producido un error al guardar el logger", null) : _responsePersistLogger;
 			
 			return _responseErrorPersister;
-		}
+		}*/
 		
 		logger.info("Se ha persistido la factura={}, username={})",facturaDto.getNumero(),username);
 		
@@ -96,7 +96,7 @@ public class FacturaService {
 	 * @param username
 	 * @return
 	 */
-	private ResponseMessage postValidarFactura(final FacturaDto facturaDto, final String username, final String xHeaderHttp) {
+	/*private ResponseMessage postValidarFactura(final FacturaDto facturaDto, final String username, final String xHeaderHttp) {
 		
 		logger.info("Entramos en el metodo postValidarFactura(factura={}, username={})",facturaDto.getNumero(),username);
 		
@@ -133,7 +133,7 @@ public class FacturaService {
 		}
 		
 		return _response;
-	}
+	}*/
 	
 	/**
 	 * 
@@ -186,7 +186,7 @@ public class FacturaService {
 	 * @param username
 	 * @return
 	 */
-	private ResponseMessage postPersisteLoggerFactura(final FacturaDto facturaDto, final String username, final String xHeaderHttp) {
+	/*private ResponseMessage postPersisteLoggerFactura(final FacturaDto facturaDto, final String username, final String xHeaderHttp) {
 		
 		logger.info("Entramos en el metodo postPersisteLoggerFactura(factura={}, username={})",facturaDto.getNumero(),username);
 		
@@ -223,7 +223,7 @@ public class FacturaService {
 		}
 		
 		return _response;
-	}
+	}*/
 	
 	/**
 	 * 
@@ -276,13 +276,13 @@ public class FacturaService {
 		
 		switch(_tipo) {
 		case TIPO_VALIDADOR:
-			_url = URL_GENERAL_VALIDADOR_FACTURA + portUrlProfile.getPortUrlValidador() + "/validadorFacturas" + _uri.trim();
+			//_url = URL_GENERAL_VALIDADOR_FACTURA + portUrlProfile.getPortUrlValidador() + "/validadorFacturas" + _uri.trim();
 			break;
 		case TIPO_PERSISTIDOR:
 			_url = URL_GENERAL_PERSISTIDOR_FACTURA + portUrlProfile.getPortUrlPersistidor() + "/persistidorFacturas" + _uri.trim();
 			break;
 		case TIPO_LOGGER:
-			_url = URL_GENERAL_PERSISTIDOR_LOGGER + portUrlProfile.getPortUrlPersistidorLogger() + "/loggerCambiosFacturas" + _uri.trim();
+			//_url = URL_GENERAL_PERSISTIDOR_LOGGER + portUrlProfile.getPortUrlPersistidorLogger() + "/loggerCambiosFacturas" + _uri.trim();
 		default:
 			break;
 		}

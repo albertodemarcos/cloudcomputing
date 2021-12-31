@@ -9,12 +9,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import es.uah.portalfacturasms.config.profile.PortUrlProfile;
 import es.uah.portalfacturasms.infrastructure.model.FacturaDto;
 import es.uah.portalfacturasms.infrastructure.utils.ResponseMessage;
+import es.uah.portalfacturasms.infrastructure.validator.FacturaValidator;
 
 @Service
 public class FacturaService {
@@ -26,6 +28,10 @@ public class FacturaService {
 	private static final String URL_PROCESADOR_FACTURA = "/procesadorFacturas/";
 	private static final String PERSISTE_FACTURA = "factura";
 	
+	//CODES
+	private static final String OK = "1";
+	private static final String NOK = "-1";
+	
 	@Autowired
     private RestTemplate httpTemplate;
 	
@@ -35,40 +41,53 @@ public class FacturaService {
 	@Autowired
 	private PortUrlProfile portUrlProfile;
 	
-	public ResponseMessage persisteFacturaDeUsuario(final FacturaDto facturaDto, final String username, final String xHeaderHttp) 
+	@Autowired
+	private FacturaValidator facturaValidator;
+	
+	public ResponseMessage persisteFacturaDeUsuario(final FacturaDto facturaDto, final String username, final String xHeaderHttp, BindingResult result) 
 	{
 		ResponseMessage _responeUser = userService.obtieneResponseMessageUsername(username);
 		
-		if(_responeUser == null || StringUtils.isBlank( _responeUser.getCode() ) || _responeUser.getCode().trim() != "1") 
+		if(_responeUser == null || StringUtils.isBlank( _responeUser.getCode() ) || _responeUser.getCode().trim() != OK) 
 		{
 			logger.error("El usuario con username={} no existe y debe autenticase en redis", username);
-			return new ResponseMessage("-1", "El usuario no existe", null);
+			return new ResponseMessage(NOK, "El usuario no existe", null);
 		}
 		
-		ResponseMessage _responseFacturador = this.persisteFactura(facturaDto, username, xHeaderHttp);
+		ResponseMessage _responseFacturador = this.persisteFactura(facturaDto, username, xHeaderHttp, result);
 		
 		if( _responeUser == null || StringUtils.isBlank( _responeUser.getCode() ) ) 
 		{
 			logger.error("La factura con numero={} del usuario={} no ha sido persistida", username);
-			return new ResponseMessage("-1", "El usuario no existe", null);
+			return new ResponseMessage(NOK, "El usuario no existe", null);
 		}
 		
 		return _responseFacturador;
 	}
 	
-	private ResponseMessage persisteFactura(final FacturaDto facturaDto, final String username, final String xHeaderHttp)
+	private ResponseMessage persisteFactura(final FacturaDto facturaDto, final String username, final String xHeaderHttp, BindingResult result)
 	{		
 		logger.info("Entramos en el metodo persisteFactura(factura={}, username={})",facturaDto.getNumero(),username);		
 		
 		ResponseMessage _response = null;
 		ResponseEntity<ResponseMessage> _responseHttp = null;
 		
+		//Comprobamos que la factura es correcta
+		this.facturaValidator.validate(facturaDto, result);
+		
+		if( result.hasErrors() ) {
+
+			logger.error("La factura no esta bien formada. Errores={}", result.getAllErrors().toString());
+			
+			return new ResponseMessage(NOK, "La factura no esta bien formada", result.getAllErrors() );
+		}
+		
 		String _url = this.createUrl(PERSISTE_FACTURA, username);
 		
 		if( StringUtils.isBlank(_url) )
 		{	
 			logger.error("La url del microservicio de procesado de factura no es correcta. URL={}", _url);
-			_response = new ResponseMessage("-1", "Se ha producido un error interno");
+			_response = new ResponseMessage(NOK, "Se ha producido un error interno");
 		}
 		try 
 		{
@@ -85,13 +104,13 @@ public class FacturaService {
 		{
 			logger.error("El microservicio de procesado de factura no esta operativo");
 			e.printStackTrace();
-			_response = new ResponseMessage("-1", "No se ha podido obtener respuesta del procesador de facturas");
+			_response = new ResponseMessage(NOK, "No se ha podido obtener respuesta del procesador de facturas");
 		}
 		catch(Exception e) 
 		{
 			logger.error("El microservicio de procesado de factura no ha respondido correctamente");
 			e.printStackTrace();
-			_response = new ResponseMessage("-1", "No se ha podido obtener respuesta del procesador de facturas");
+			_response = new ResponseMessage(NOK, "No se ha podido obtener respuesta del procesador de facturas");
 		}
 		return _response;
 	}
