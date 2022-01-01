@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>es.uah.facturasprocesadorms</groupId>
 	<artifactId>FacturasProcesadorMS</artifactId>
-	<version>2.0.0</version>
+	<version>3.0.0</version>
 	<name>FacturasProcesadorMS</name>
 	<description>Microservicio encargado de procesar la informacion e enviarla a persistir al tercer nivel</description>
 	<properties>
