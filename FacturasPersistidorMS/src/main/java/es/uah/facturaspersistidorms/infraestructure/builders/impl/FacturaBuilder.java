@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
+import org.springframework.util.CollectionUtils;
 
 import es.uah.facturaspersistidorms.infraestructure.builders.IBuilder;
 import es.uah.facturaspersistidorms.infraestructure.model.dtos.FacturaDto;
@@ -27,13 +27,21 @@ public class FacturaBuilder implements IBuilder<Factura, FacturaDto> {
 	
 	@Override
 	public Factura build(FacturaDto dto, String username) {
-		// TODO Auto-generated method stub.
+		
+		logger.info("Se realiza el proceso de crear la factura por el usuario={}", username);
 		
 		if( dto == null ) 
 		{
 			logger.error("La factura no ha llegado correctamente por el usuario={}", username);
 			return null;
 		}
+		
+		Factura _factura = crearFacturaDesdeFacturaDto(dto, username);		
+		
+		return _factura;
+	}
+
+	private Factura crearFacturaDesdeFacturaDto(FacturaDto dto, String username) {
 		
 		Factura _factura = new Factura();
 		
@@ -43,9 +51,10 @@ public class FacturaBuilder implements IBuilder<Factura, FacturaDto> {
 		_factura.setFechaEmision(dto.getFechaEmision());
 		_factura.setImporte(dto.getImporte());
 		_factura.setNumero(dto.getNumero());
-		_factura.setUsername(username);		
+		_factura.setUsername(username);
 		
 		List<LineaFactura> lineasFactura = this.obtieneLineasFacturaDesdeLineasFacturaDto(dto, username);
+		
 		_factura.setLineasFactura(lineasFactura);
 		
 		return _factura;
@@ -55,14 +64,14 @@ public class FacturaBuilder implements IBuilder<Factura, FacturaDto> {
 		
 		List<LineaFactura> _lineasFactura = new ArrayList<LineaFactura>();
 		
-		if(_facturaDto.getLineasFacturaDto() == null || _facturaDto.getLineasFacturaDto().size() < 1)
+		if( CollectionUtils.isEmpty( _facturaDto.getLineasFacturaDto() ) )
 		{
 			logger.error("Las lineas de la factura no han llegado correctamente por el usuario={}", username);
 		}
 		
 		for( LineaFacturaDto _lineaDto : _facturaDto.getLineasFacturaDto() )
 		{
-			LineaFactura _linea = lineaFacturaBuilder.build(_lineaDto, null);
+			LineaFactura _linea = lineaFacturaBuilder.build(_lineaDto, username);
 			
 			if( _linea == null ) 
 			{

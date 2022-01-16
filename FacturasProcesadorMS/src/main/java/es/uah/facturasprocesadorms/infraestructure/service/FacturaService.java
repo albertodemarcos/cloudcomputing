@@ -52,17 +52,6 @@ public class FacturaService {
 		
 		logger.info("Entramos en el metodo procesaFactura(factura={}, username={})",facturaDto.getNumero(),username);
 		
-		/*ResponseMessage _responseValidator = this.postValidarFactura(facturaDto, username, xHeaderHttp);
-		
-		if( this.validarPeticionHttp(_responseValidator) ) {
-			
-			logger.error("Se ha producido un error al validar la factura para el usuario={}", username);
-			
-			ResponseMessage _responseErrorValidator = _responseValidator == null ? new ResponseMessage(NOK, "Se ha producido un error al validar la factura", null) : _responseValidator;
-			
-			return _responseErrorValidator;
-		}*/
-		
 		ResponseMessage _responsePersist = this.postPersisteFactura(facturaDto, username, xHeaderHttp);
 		
 		if( this.validarPeticionHttp(_responsePersist) ) {

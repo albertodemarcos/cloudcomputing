@@ -16,13 +16,23 @@ public class LineaFacturaBuilder implements IBuilder<LineaFactura, LineaFacturaD
 	
 	@Override
 	public LineaFactura build(LineaFacturaDto dto, String username) {
-		// TODO Auto-generated method stub
+		
+		logger.info("Se va a crear una linea de factura por el usuario={}", username);
 		
 		if( dto == null ) 
 		{
 			logger.error("La linea de la factura no ha llegado correctamente por el usuario={}", username);
 			return null;
 		}
+		
+		LineaFactura _lineaFactura = creaLineaFacturaDesdeLineaFacturaDto(dto);
+		
+		logger.info("Se ha creado una linea de factura={} por el usuario={}", _lineaFactura.toString(), username);
+				
+		return _lineaFactura;
+	}
+
+	private LineaFactura creaLineaFacturaDesdeLineaFacturaDto(LineaFacturaDto dto) {
 		
 		LineaFactura _lineaFactura = new LineaFactura();
 		
@@ -32,7 +42,7 @@ public class LineaFacturaBuilder implements IBuilder<LineaFactura, LineaFacturaD
 		_lineaFactura.setCantidad(dto.getCantidad());
 		_lineaFactura.setUnidad(dto.getUnidad());
 		_lineaFactura.setImpuesto(dto.getImpuesto());
-				
+		
 		return _lineaFactura;
 	}
 
