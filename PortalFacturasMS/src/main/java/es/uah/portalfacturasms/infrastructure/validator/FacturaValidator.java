@@ -102,7 +102,7 @@ public class FacturaValidator implements Validator {
 		if( CollectionUtils.isEmpty(_lineas) ) 
 		{
 			logger.error("No han llegado las lineas de la factura");
-			errors.rejectValue("lineas", "", null, "No hay lineas de facturas que expliquen la factura");
+			errors.rejectValue("lineasFacturaDto", "", null, "No hay lineas de facturas que expliquen la factura");
 			return;
 		}
 		
