@@ -17,13 +17,21 @@ public class FacturaBuilder implements IBuilder<Factura, FacturaDto> {
 	
 	@Override
 	public Factura build(FacturaDto dto, String username) {
-		// TODO Auto-generated method stub.
+		
+		logger.info("Se realiza el proceso de crear la factura por el usuario={}", username);
 		
 		if( dto == null ) 
 		{
 			logger.error("La factura no ha llegado correctamente por el usuario={}", username);
 			return null;
 		}
+		
+		Factura _factura = crearFacturaDesdeFacturaDto(dto, username);		
+		
+		return _factura;
+	}
+
+	private Factura crearFacturaDesdeFacturaDto(FacturaDto dto, String username) {
 		
 		Factura _factura = new Factura();
 		
@@ -33,7 +41,7 @@ public class FacturaBuilder implements IBuilder<Factura, FacturaDto> {
 		_factura.setFechaEmision(dto.getFechaEmision());
 		_factura.setImporte(dto.getImporte());
 		_factura.setNumero(dto.getNumero());
-		_factura.setUsername(username);		
+		_factura.setUsername(username);
 		
 		return _factura;
 	}

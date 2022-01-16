@@ -77,9 +77,9 @@ public class FacturaService {
 		
 		if( result.hasErrors() ) {
 
-			logger.error("La factura no esta bien formada. Errores={}", result.getAllErrors().toString());
+			logger.error("La factura no esta bien formada. Errores={}", result.getFieldErrors().toString());
 			
-			return new ResponseMessage(NOK, "La factura no esta bien formada", result.getAllErrors() );
+			return new ResponseMessage(NOK, "La factura no esta bien formada", result.getFieldErrors().toString() );
 		}
 		
 		String _url = this.createUrl(PERSISTE_FACTURA, username);
