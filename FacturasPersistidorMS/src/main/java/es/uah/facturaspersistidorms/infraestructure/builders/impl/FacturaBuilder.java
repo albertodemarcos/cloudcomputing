@@ -67,6 +67,8 @@ public class FacturaBuilder implements IBuilder<Factura, FacturaDto> {
 		if( CollectionUtils.isEmpty( _facturaDto.getLineasFacturaDto() ) )
 		{
 			logger.error("Las lineas de la factura no han llegado correctamente por el usuario={}", username);
+			
+			return _lineasFactura;
 		}
 		
 		for( LineaFacturaDto _lineaDto : _facturaDto.getLineasFacturaDto() )
